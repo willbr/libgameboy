@@ -52,6 +52,8 @@ struct sm83_cpu {
         union registers reg;
         u16 pc;
         u16 sp;
+        
+        enum bool ime;
 
         u8 *memory;
 

@@ -9,6 +9,8 @@ extern struct def_opcode opcodes[];
 
 void
 init_sm83(struct sm83_cpu *cpu) {
+    /* Post Power Up Values */
+
     cpu->reg.wr.af = 0x01b0;
     cpu->reg.wr.bc = 0x0013;
     cpu->reg.wr.de = 0x00d8;
@@ -18,6 +20,39 @@ init_sm83(struct sm83_cpu *cpu) {
     cpu->sp = 0xfffe;
 
     cpu->ticks = 0;
+
+    cpu->memory[0xff05] = 0x00; /* TIMA */
+    cpu->memory[0xff06] = 0x00; /* TMA */
+    cpu->memory[0xff07] = 0x00; /* TAC */
+    cpu->memory[0xff10] = 0x80; /* NR10 */
+    cpu->memory[0xff11] = 0xbf; /* NR11 */
+    cpu->memory[0xff12] = 0xf3; /* NR12 */
+    cpu->memory[0xff14] = 0xbf; /* NR14 */
+    cpu->memory[0xff16] = 0x3f; /* NR21 */
+    cpu->memory[0xff17] = 0x00; /* NR22 */
+    cpu->memory[0xff19] = 0xbf; /* NR24 */
+    cpu->memory[0xff1a] = 0x7f; /* NR30 */
+    cpu->memory[0xff1b] = 0xff; /* NR31 */
+    cpu->memory[0xff1c] = 0x9f; /* NR32 */
+    cpu->memory[0xff1e] = 0xbf; /* NR33 */
+    cpu->memory[0xff20] = 0xff; /* NR41 */
+    cpu->memory[0xff21] = 0x00; /* NR42 */
+    cpu->memory[0xff22] = 0x00; /* NR43 */
+    cpu->memory[0xff23] = 0xbf; /* NR44 */
+    cpu->memory[0xff24] = 0x77; /* NR50 */
+    cpu->memory[0xff25] = 0xf3; /* NR51 */
+    cpu->memory[0xff26] = 0xf1; /* NR52 */
+    cpu->memory[0xff40] = 0x91; /* LCDC */
+    cpu->memory[0xff42] = 0x00; /* SCY */
+    cpu->memory[0xff43] = 0x00; /* SCX */
+    cpu->memory[0xff45] = 0x00; /* LYC */
+    cpu->memory[0xff47] = 0xfc; /* BGP */
+    cpu->memory[0xff48] = 0xff; /* OBP0 */
+    cpu->memory[0xff49] = 0xff; /* OBP1 */
+    cpu->memory[0xff4a] = 0x00; /* WY */
+    cpu->memory[0xff4b] = 0x00; /* WX */
+    cpu->memory[0xffff] = 0x00; /* IE */
+
 }
 
 char*
@@ -126,6 +161,8 @@ read_arg(
         case ot_BC:
         case ot_DE:
         case ot_HL:
+        case ot_SP:
+        case ot_PC:
             snprintf(
                      s1,
                      n,
@@ -305,6 +342,7 @@ void eval_opcode(struct sm83_cpu *cpu, u8 opcode) {
     u8  deref;
     u8  old_8reg;
     u16 old_16reg;
+    u8 temp8;
 
         /*o = opcodes[opcode];*/
 
