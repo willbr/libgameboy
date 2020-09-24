@@ -52,7 +52,7 @@ main(int argc, char **argv)
         sm83_print_regs_headers();
         sm83_print_regs(&cpu);
         
-        for (i = 0; i < 35; i++) {
+        for (i = 0; i < 0xFF; i++) {
             sm83_cpu_step(&cpu);
             sm83_print_regs(&cpu);
         }
