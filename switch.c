@@ -1,7 +1,7 @@
 switch (opcode)
 {
 case 0x00: /* NOP */
-	/*printf("%02x NOP\n", opcode);*/
+	printf("%02x NOP\n", opcode);
 	break;
 	
 case 0x01: /* LD BC, d16 */
@@ -48,7 +48,7 @@ case 0x04: /* INC B */
 case 0x05: /* DEC B */
 	old_8reg = cpu->reg.br.b;
 	cpu->reg.br.b -= 1;
-	/*printf("%02x DEC B\n", opcode);*/
+	printf("%02x DEC B\n", opcode);
 	if (cpu->reg.br.b == 0)
 	    cpu->reg.flag.zero = true;
 	
@@ -57,13 +57,13 @@ case 0x05: /* DEC B */
 	if(bit4(old_8reg) != bit4(cpu->reg.br.b))
 	    cpu->reg.flag.half_carry = true;
 	
-	/*assert(false); [> flags changed Z1H- <]*/
+	assert(false); /* flags changed Z1H- */
 	break;
 	
 case 0x06: /* LD B, d8 */
 	d8 = read8(cpu, cpu->pc);
 	cpu->reg.br.b = d8;
-	/*printf("%02x LD B, d8\n", opcode);*/
+	printf("%02x LD B, d8\n", opcode);
 	cpu->pc += 1;
 	break;
 	
@@ -124,7 +124,7 @@ case 0x0C: /* INC C */
 case 0x0D: /* DEC C */
 	old_8reg = cpu->reg.br.c;
 	cpu->reg.br.c -= 1;
-	/*printf("%02x DEC C\n", opcode);*/
+	printf("%02x DEC C\n", opcode);
 	if (cpu->reg.br.c == 0)
 	    cpu->reg.flag.zero = true;
 	
@@ -133,13 +133,13 @@ case 0x0D: /* DEC C */
 	if(bit4(old_8reg) != bit4(cpu->reg.br.c))
 	    cpu->reg.flag.half_carry = true;
 	
-	/*assert(false); [> flags changed Z1H- <]*/
+	assert(false); /* flags changed Z1H- */
 	break;
 	
 case 0x0E: /* LD C, d8 */
 	d8 = read8(cpu, cpu->pc);
 	cpu->reg.br.c = d8;
-	/*printf("%02x LD C, d8\n", opcode);*/
+	printf("%02x LD C, d8\n", opcode);
 	cpu->pc += 1;
 	break;
 	
@@ -309,14 +309,14 @@ case 0x20: /* JR NZ, r8 */
 	{
 	    cpu->pc += 1;
 	}
-	/*printf("%02x JR NZ, r8\n", opcode);*/
-	/*assert(false);*/
+	printf("%02x JR NZ, r8\n", opcode);
+	assert(false);
 	break;
 	
 case 0x21: /* LD HL, d16 */
 	d16 = read16(cpu, cpu->pc);
 	cpu->reg.wr.hl = d16;
-	/*printf("%02x LD HL, d16\n", opcode);*/
+	printf("%02x LD HL, d16\n", opcode);
 	cpu->pc += 2;
 	break;
 	
@@ -488,7 +488,7 @@ case 0x31: /* LD SP, d16 */
 	
 case 0x32: /* LD (HL), A */
 	write8(cpu, cpu->reg.wr.hl, cpu->reg.br.a);
-	/*printf("%02x LD (HL), A\n", opcode);*/
+	printf("%02x LD (HL), A\n", opcode);
 	break;
 	
 case 0x33: /* INC SP */
@@ -538,7 +538,7 @@ case 0x35: /* DEC (HL) */
 case 0x36: /* LD (HL), d8 */
 	d8 = read8(cpu, cpu->pc);
 	write8(cpu, cpu->reg.wr.hl, d8);
-	/*printf("%02x LD (HL), d8\n", opcode);*/
+	printf("%02x LD (HL), d8\n", opcode);
 	cpu->pc += 1;
 	break;
 	
@@ -621,7 +621,7 @@ case 0x3D: /* DEC A */
 case 0x3E: /* LD A, d8 */
 	d8 = read8(cpu, cpu->pc);
 	cpu->reg.br.a = d8;
-	/*printf("%02x LD A, d8\n", opcode);*/
+	printf("%02x LD A, d8\n", opcode);
 	cpu->pc += 1;
 	break;
 	
@@ -1242,8 +1242,8 @@ case 0xAE: /* XOR (HL) */
 	
 case 0xAF: /* XOR A */
 	cpu->reg.br.a ^= cpu->reg.br.a;
-	/*printf("%02x XOR A\n", opcode);*/
-	/*assert(false); [> flags changed 1000 <]*/
+	printf("%02x XOR A\n", opcode);
+	assert(false); /* flags changed 1000 */
 	break;
 	
 case 0xB0: /* OR B */
@@ -1368,7 +1368,7 @@ case 0xC2: /* JP NZ, a16 */
 case 0xC3: /* JP a16 */
 	a16 = read16(cpu, cpu->pc);
 	cpu->pc = a16;
-	/*printf("%02x JP a16\n", opcode);*/
+	printf("%02x JP a16\n", opcode);
 	break;
 	
 case 0xC4: /* CALL NZ, a16 */
@@ -1559,10 +1559,9 @@ case 0xDF: /* RST 18H */
 	
 case 0xE0: /* LDH (a8), A */
 	a8 = read8(cpu, cpu->pc);
-	/*printf("%02x LDH (a8), A\n", opcode);*/
-    write8(cpu, 0xff00 + a8, cpu->reg.br.a);
+	printf("%02x LDH (a8), A\n", opcode);
 	cpu->pc += 1;
-	/*assert(false);*/
+	assert(false);
 	break;
 	
 case 0xE1: /* POP HL */
@@ -1653,11 +1652,9 @@ case 0xEF: /* RST 28H */
 	
 case 0xF0: /* LDH A, (a8) */
 	a8 = read8(cpu, cpu->pc);
-    deref = read8(cpu, 0xff00 + a8);
-    cpu->reg.br.a = deref;
-	/*printf("%02x LDH A, (a8)\n", opcode);*/
+	printf("%02x LDH A, (a8)\n", opcode);
 	cpu->pc += 1;
-	/*assert(false);*/
+	assert(false);
 	break;
 	
 case 0xF1: /* POP AF */
@@ -1673,9 +1670,8 @@ case 0xF2: /* LD A, (C) */
 	break;
 	
 case 0xF3: /* DI */
-    cpu->ime = false;
-	/*printf("%02x DI\n", opcode);*/
-	/*assert(false);*/
+	printf("%02x DI\n", opcode);
+	assert(false);
 	break;
 	
 case 0xF4: /* ILLEGAL_F4 */
@@ -1737,25 +1733,10 @@ case 0xFD: /* ILLEGAL_FD */
 	
 case 0xFE: /* CP d8 */
 	d8 = read8(cpu, cpu->pc);
-	/*printf("%02x CP d8\n", opcode);*/
-
-    old_8reg = cpu->reg.br.a;
-    temp8 = (cpu->reg.br.a - d8);
-
-    if (temp8 == 0)
-        cpu->reg.flag.zero = true;
-
-    cpu->reg.flag.add_or_sub = true;
-    
-	if(bit4(old_8reg) != bit4(temp8))
-	    cpu->reg.flag.half_carry = true;
-
-    if(temp8 < old_8reg)
-        cpu->reg.flag.carry = true;
-
+	printf("%02x CP d8\n", opcode);
 	cpu->pc += 1;
-	/*assert(false);*/
-	/*assert(false); [> flags changed Z1HC <]*/
+	assert(false);
+	assert(false); /* flags changed Z1HC */
 	break;
 	
 case 0xFF: /* RST 38H */
